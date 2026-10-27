@@ -20,3 +20,28 @@ def iou(box1, box2):
         return area_of_intersection / area_of_union
     except ZeroDivisionError:
         return 0.0
+
+
+def nms(boxes, conf_threshold=0.7, iou_threshold=0.4):
+    """
+    A box is expected in this shape: (x1, y1, x2, y2, conf_score)
+    """
+    
+    bbox_list_thresholded = []
+    bbox_list_new = []
+
+    bbox_sorted = sorted(boxes, reverse=True, key=lambda x: x[4])
+    for box in bbox_sorted:
+        if box[4] > conf_threshold:
+            bbox_list_thresholded.append(box)
+
+    while len(bbox_list_thresholded) > 0:
+        current_box = bbox_list_thresholded.pop(0)
+        bbox_list_new.append(current_box)
+
+        for box in bbox_list_thresholded.copy():
+            _iou = iou(current_box[:4], box[:4])
+            if _iou > iou_threshold:
+                bbox_list_thresholded.remove(box)
+
+    return bbox_list_new
