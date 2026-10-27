@@ -16,4 +16,7 @@ def iou(box1, box2):
 
     area_of_union = area_box1 + area_box2 - area_of_intersection
 
-    return area_of_intersection / area_of_union
+    try:
+        return area_of_intersection / area_of_union
+    except ZeroDivisionError:
+        return 0.0
